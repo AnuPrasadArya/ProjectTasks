@@ -36,7 +36,7 @@ namespace ProjectTask.Application.Services
             {
                 return ("", "", "Invalid Username or Password");
             }
-            string jwtToken = Helper.GenerateJwtToken(_config);
+            string jwtToken = Helper.GenerateToken(user, _config);
 
             return (jwtToken, user.Username, "Success");
 

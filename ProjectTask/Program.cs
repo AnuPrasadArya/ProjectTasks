@@ -50,7 +50,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IRegisterService, RegisterService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
-
+builder.Services.AddScoped<IProjectService, ProjectService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
