@@ -39,3 +39,5 @@ _TestResults/
 *.opensdf
 *.VC.db
 *.VC.VC.opendb
+/ProjectTask/obj/Debug/net8.0/ProjectTask.AssemblyInfo.cs
+/ProjectTask/obj/Debug/net8.0/ProjectTask.AssemblyInfoInputs.cache
