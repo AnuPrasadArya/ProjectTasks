@@ -1,7 +1,10 @@
-﻿namespace ProjectTask.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ProjectTask.Domain.Entities
 {
     public class Users
     {
+        [Key]
         public int UserId { get; set; }
         public string? Username { get; set; }
         public byte[]? PasswordHash { get; set; }
