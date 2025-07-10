@@ -32,7 +32,7 @@ namespace ProjectTask.Application.Services
             var user = new Users
             {
                 Username = request.Username,
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password)),
+                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password??string.Empty)),
                 PasswordSalt = hmac.Key
             };
             _db.Users.Add(user);
