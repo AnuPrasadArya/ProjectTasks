@@ -41,13 +41,12 @@
             &copy; 2025 - ProjectTaskUI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    @* <script src="~/js/site.js" asp-append-version="true"></script> *@
 
     <!-- ✅ Add this script to set local storage -->
-    <script>
+   @*  <script>
         localStorage.setItem("accessToken", "@User.Claims.FirstOrDefault(c => c.Type == "AccessToken")?.Value");
         localStorage.setItem("userId", "@User.Claims.FirstOrDefault(c => c.Type == "userId")?.Value");
 
@@ -57,7 +56,7 @@
         // Console log them
         console.log("Access Token:", token);
         console.log("User ID:", userId);
-    </script>
+    </script> *@
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

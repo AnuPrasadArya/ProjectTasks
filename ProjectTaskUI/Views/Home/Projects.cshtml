@@ -11,6 +11,18 @@
     <button class="btn btn-primary" onclick="createProject()">Save</button>
 </div>
 
-<ul id="projectsList" class="list-group"></ul>
-
+<table class="table table-bordered" id="projectsTable" style="display:none;">
+    <thead>
+        <tr>
+            <th>ProjectId</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="projectsBody">
+        <!-- Project rows will be appended here -->
+    </tbody>
+</table>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="~/js/projects.js"></script>

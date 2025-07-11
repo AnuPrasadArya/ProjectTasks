@@ -18,7 +18,7 @@ namespace ProjectTask.API.Controllers
             _projectService = projectService;
         }      
 
-        [HttpGet("GetProject")]
+        [HttpPost("GetProject")]
         public async Task<IActionResult> GetProject(Projects request)
         {
             var projects = await _projectService.GetProject( request);

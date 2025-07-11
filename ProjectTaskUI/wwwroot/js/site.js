@@ -81,22 +81,22 @@ async function loadProjects() {
     //});
 }
 
-async function createProject() {
-    let token = getAccessToken();
-    let data = {
-        name: document.getElementById("projectName").value,
-        description: document.getElementById("projectDesc").value
-    };
-    await fetch('https://localhost:5001/api/Projects', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(data)
-    });
-    loadProjects();
-}
+//async function createProject() {
+//    let token = getAccessToken();
+//    let data = {
+//        name: document.getElementById("projectName").value,
+//        description: document.getElementById("projectDesc").value
+//    };
+//    await fetch('https://localhost:5001/api/Projects', {
+//        method: 'POST',
+//        headers: {
+//            'Content-Type': 'application/json',
+//            'Authorization': `Bearer ${token}`
+//        },
+//        body: JSON.stringify(data)
+//    });
+//    loadProjects();
+//}
 
 async function loadTasks(projectId) {
     let token = getAccessToken();
