@@ -13,9 +13,8 @@ namespace ProjectTest
     {
         [Fact]
        
-        public async Task CreateProject_Should_Add_Project_To_Db()
+        public async Task CreateProject_To_Db()
         {
-            // Arrange
             var context = DbContextHelper.GetInMemoryDbContext();
 
             var controller = new ProjectController(context);

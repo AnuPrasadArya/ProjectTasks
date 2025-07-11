@@ -1,0 +1,25 @@
+﻿using Microsoft.EntityFrameworkCore;
+using ProjectTask.Infrastructure.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ProjectTest
+{
+    public static class  DbContextHelper
+    {
+        public static ApplicationDbContext GetInMemoryDbContext()
+        {
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            var context = new ApplicationDbContext(options);
+            context.Database.EnsureCreated();
+
+            return context;
+        }
+    }
+}
