@@ -3,15 +3,15 @@
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
-    const response = await fetch("https://localhost:7010/api/auth/register", {
+    const response = await fetch("https://localhost:7125/api/Register/NewUser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
     });
 
     if (response.ok) {
-        document.getElementById("registerSuccess").innerText = "Registered successfully. Please login.";
-        document.getElementById("registerSuccess").style.display = "block";
+        alert("User Registered Successfully");
+        window.location.href = "/Home/Login";
     } else {
         document.getElementById("registerError").innerText = "Error during registration.";
         document.getElementById("registerError").style.display = "block";
