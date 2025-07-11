@@ -45,7 +45,7 @@ namespace ProjectTask.Application.Services
         {
             var task = await _db.ProjectTasks
                 .Include(t => t.Project)
-                .FirstOrDefaultAsync(t => t.Id == request.TaskId && t.Project.UserId == request.UserId && t.ProjectId==request.ProjectId)
+                .FirstOrDefaultAsync(t => t.Id == request.TaskId && t.Project.UserId == request.UserId)
                 ?? throw new Exception("Task not found");
 
             task.Title = request.Title;
@@ -60,10 +60,10 @@ namespace ProjectTask.Application.Services
         public async Task DeleteTask(TaskRequest request)
         {
             var task = await _db.ProjectTasks                
-                .FirstOrDefaultAsync(t => t.Id == request.TaskId && t.ProjectId == request.ProjectId)
+                .FirstOrDefaultAsync(t => t.Id == request.TaskId)
                 ?? throw new Exception("Task not found");
 
-            task.IsDelete = true;
+            _db.ProjectTasks.Remove(task);
             await _db.SaveChangesAsync();
 
         }

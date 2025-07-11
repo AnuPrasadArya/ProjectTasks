@@ -112,3 +112,8 @@ async function deleteProject(id) {
     }
 }
 
+function goToTaskPage() {
+    window.location.href = "/Home/Tasks"; 
+}
+
+

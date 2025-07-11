@@ -1,134 +1,181 @@
-﻿function showTaskForm() {
-    document.getElementById("taskForm").style.display = "block";
+﻿$(document).ready(function () {
+    loadProjectsDropdown();
+});
+
+async function loadProjectsDropdown() {
+    const token = localStorage.getItem("accessToken");
+    const userId = parseInt(localStorage.getItem("userId"));    
+    const res = await fetch("https://localhost:7125/api/Project/GetProject", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({ userId })
+    });
+
+    if (res.ok) {
+        const projects = await res.json();
+
+        const projectSelect = $("#projectSelect");
+        const taskProjectSelect = $("#taskProjectSelect");
+        projectSelect.empty().append(`<option value="">-- Select Project --</option>`);
+        taskProjectSelect.empty().append(`<option value="">-- Select Project --</option>`);
+
+        projects.forEach(p => {
+            projectSelect.append(`<option value="${p.id}">${p.name}</option>`);
+            taskProjectSelect.append(`<option value="${p.id}">${p.name}</option>`);
+        });
+
+    } else {
+        alert("Error loading projects");
+    }
+}
+
+function showTaskForm() {    
+    $("#taskForm").show();
+    $("#projectSelect").hide();
+    $("#tasksTable").hide();
+}
+
+async function loadTasksForProject() {
+    $("#projectSelect").show();
+    const projectId = $("#projectSelect").val();
+    const token = localStorage.getItem("accessToken");
+    const userId = parseInt(localStorage.getItem("userId"));
+
+    if (!projectId) {
+        $("#tasksTable").hide();
+        return;
+    }
+
+    const res = await fetch(`https://localhost:7125/api/Task/GetTasks`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({ userId, projectId })
+    });
+
+    if (res.ok) {
+        const tasks = await res.json();
+        const body = $("#tasksBody");
+        body.empty();
+
+        tasks.forEach(task => {
+            const row = `
+                <tr>
+                    <td>${task.id}</td>
+                    <td><input type="text" class="form-control" id="title_${task.id}" value="${task.title}" /></td>
+                    <td><textarea class="form-control" id="desc_${task.id}">${task.description}</textarea></td>
+                    <td><input type="date" class="form-control" id="due_${task.id}" value="${task.dueDate.substring(0, 10)}" /></td>
+                    <td><input type="checkbox" id="completed_${task.id}" ${task.isCompleted ? "checked" : ""} /></td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="updateTask(${task.id})">Update</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})">Delete</button>
+                    </td>
+                </tr>
+            `;
+            body.append(row);
+        });
+
+        $("#tasksTable").show();
+    } else {
+        alert("Error loading tasks");
+    }
 }
 
 async function createTask() {
-    const projectId = document.getElementById("projectId").value;
-    const title = document.getElementById("taskTitle").value;
-    const description = document.getElementById("taskDesc").value;
-    const dueDate = document.getElementById("taskDueDate").value;
-    const completed = document.getElementById("taskCompleted").checked;
-
     const token = localStorage.getItem("accessToken");
-
-    const response = await fetch(`https://localhost:7010/api/projects/${projectId}/tasks`, {
+    const userId = parseInt(localStorage.getItem("userId"));
+    const projectId = $("#taskProjectSelect").val();
+    const title = $("#taskTitle").val();
+    const description = $("#taskDesc").val();
+    const dueDate = $("#taskDueDate").val();
+    const isCompleted = $("#taskCompleted").is(":checked");
+    if (!projectId) {
+        alert("Please select a project first!");
+        return;
+    }
+    const res = await fetch("https://localhost:7125/api/Task/CreateTask", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + token
         },
         body: JSON.stringify({
+            userId,
+            projectId: parseInt(projectId),
             title,
             description,
             dueDate,
-            isCompleted: completed
+            isCompleted
         })
     });
 
-    if (response.ok) {
-        alert("Task created!");
-        loadTasks();
-    } else {
-        alert("Error creating task.");
-    }
-}
-
-async function loadTasks() {
-    const projectId = document.getElementById("projectId").value;
-    const token = localStorage.getItem("accessToken");
-
-    const res = await fetch(`https://localhost:7010/api/projects/${projectId}/tasks`, {
-        headers: { "Authorization": "Bearer " + token }
-    });
-
     if (res.ok) {
-        const tasks = await res.json();
-        const list = document.getElementById("tasksList");
-        list.innerHTML = "";
-        tasks.forEach(t => {
-            const li = document.createElement("li");
-            li.className = "list-group-item d-flex justify-content-between align-items-center";
-
-            li.innerHTML = `
-                <div>
-                    <strong>${t.title}</strong> <br/>
-                    ${t.description} <br/>
-                    Due: ${t.dueDate?.substring(0, 10) || "N/A"} <br/>
-                    Completed: ${t.isCompleted ? "Yes" : "No"}
-                </div>
-                <div>
-                    <button class="btn btn-sm btn-primary me-1" onclick="editTask(${t.id}, '${t.title}', '${t.description}', '${t.dueDate}', ${t.isCompleted})">Edit</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteTask(${t.id})">Delete</button>
-                </div>
-            `;
-            list.appendChild(li);
-        });
+        alert("Task created successfully!");
+        $("#taskForm").hide();
+        loadTasksForProject();
     } else {
-        alert("Error loading tasks.");
+        alert("Error creating task");
     }
-}
-
-async function deleteTask(taskId) {
-    const projectId = document.getElementById("projectId").value;
-    const token = localStorage.getItem("accessToken");
-
-    const res = await fetch(`https://localhost:7010/api/projects/${projectId}/tasks/${taskId}`, {
-        method: "DELETE",
-        headers: { "Authorization": "Bearer " + token }
-    });
-
-    if (res.ok) {
-        alert("Task deleted!");
-        loadTasks();
-    } else {
-        alert("Error deleting task.");
-    }
-}
-
-function editTask(taskId, title, description, dueDate, isCompleted) {
-    document.getElementById("taskTitle").value = title;
-    document.getElementById("taskDesc").value = description;
-    document.getElementById("taskDueDate").value = dueDate ? dueDate.substring(0, 10) : "";
-    document.getElementById("taskCompleted").checked = isCompleted;
-    document.getElementById("taskForm").style.display = "block";
-
-    // Replace Save button with Update
-    const saveBtn = document.querySelector("#taskForm button");
-    saveBtn.textContent = "Update";
-    saveBtn.onclick = function () {
-        updateTask(taskId);
-    };
 }
 
 async function updateTask(taskId) {
-    const projectId = document.getElementById("projectId").value;
-    const title = document.getElementById("taskTitle").value;
-    const description = document.getElementById("taskDesc").value;
-    const dueDate = document.getElementById("taskDueDate").value;
-    const completed = document.getElementById("taskCompleted").checked;
-
     const token = localStorage.getItem("accessToken");
+    const userId = parseInt(localStorage.getItem("userId"));
+    const title = $(`#title_${taskId}`).val();
+    const description = $(`#desc_${taskId}`).val();
+    const dueDate = $(`#due_${taskId}`).val();
+    const isCompleted = $(`#completed_${taskId}`).is(":checked");
 
-    const response = await fetch(`https://localhost:7010/api/projects/${projectId}/tasks/${taskId}`, {
+    const res = await fetch(`https://localhost:7125/api/Task/UpdateTask`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + token
         },
         body: JSON.stringify({
+            taskId,
             title,
             description,
             dueDate,
-            isCompleted: completed
+            isCompleted,
+            userId
         })
     });
 
-    if (response.ok) {
-        alert("Task updated!");
-        document.querySelector("#taskForm button").textContent = "Save";
-        document.querySelector("#taskForm button").onclick = createTask;
-        loadTasks();
+    if (res.ok) {
+        alert("Task updated successfully!");
+        loadTasksForProject();
     } else {
-        alert("Error updating task.");
+        alert("Error updating task");
+    }
+}
+
+async function deleteTask(taskId) {
+    const token = localStorage.getItem("accessToken");
+    const userId = parseInt(localStorage.getItem("userId"));
+    if (!confirm("Are you sure you want to delete this task?")) return;
+
+    const res = await fetch(`https://localhost:7125/api/Task/DeleteTask`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+            taskId,            
+            userId
+        })
+    });
+
+    if (res.ok) {
+        alert("Task deleted successfully!");
+        loadTasksForProject();
+    } else {
+        alert("Error deleting task");
     }
 }

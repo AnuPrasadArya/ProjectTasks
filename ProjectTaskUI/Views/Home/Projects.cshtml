@@ -3,7 +3,10 @@
 }
 
 <h2>Projects</h2>
-<button class="btn btn-success mb-3" onclick="showProjectForm()">Add Project</button>
+<div class="mb-3">
+    <button class="btn btn-success" onclick="showProjectForm()">Add Project</button>
+    <button class="btn btn-primary" onclick="goToTaskPage()">Add Task</button>
+</div>
 
 <div id="projectForm" style="display:none;">
     <input id="projectName" class="form-control mb-2" placeholder="Name" />
