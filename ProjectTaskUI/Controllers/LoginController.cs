@@ -49,6 +49,28 @@ namespace ProjectTaskUI.Controllers
             ViewBag.Error = "Invalid login!";
             return View();
         }
-       
+        [HttpGet]
+        public IActionResult Register() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterModel model)
+        {
+            var client = new HttpClient();
+            var response = await client.PostAsJsonAsync($"{ApiBaseUrl}/api/Register/NewUser", model);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Login");
+            }
+
+            ViewBag.Error = "Failed to register.";
+            return View();
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync("MyCookieAuth");
+            return RedirectToAction("Login");
+        }
     }
 }
