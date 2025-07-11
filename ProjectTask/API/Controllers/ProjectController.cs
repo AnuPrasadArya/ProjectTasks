@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectTask.Application.Interfaces;
 using ProjectTask.Domain.Entities;
@@ -15,14 +16,12 @@ namespace ProjectTask.API.Controllers
         public ProjectController(IProjectService projectService)
         {
             _projectService = projectService;
-        }
-
-        private int GetUserId() => int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        }      
 
         [HttpGet("GetProject")]
-        public async Task<IActionResult> GetProject()
+        public async Task<IActionResult> GetProject(Projects request)
         {
-            var projects = await _projectService.GetProject(GetUserId());
+            var projects = await _projectService.GetProject( request);
             return Ok(projects);
         }
 

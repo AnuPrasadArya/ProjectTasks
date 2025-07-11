@@ -12,10 +12,11 @@ namespace ProjectTask.Application.Services
         {
             _db = db;
         }
-
-        public async Task<List<Projects>> GetProject(int userId) =>
-            await _db.Projects.Where(p => p.UserId == userId).ToListAsync();
-
+        public async Task<List<Projects>> GetProject(Projects request)
+        {
+            var project = await _db.Projects.Where(p => p.UserId == request.UserId).ToListAsync();
+            return project;
+        }
         public async Task<Projects> CreateProject(Projects request)
         {
             var project = new Projects { Name = request.Name, Description = request.Description, UserId = request.UserId };

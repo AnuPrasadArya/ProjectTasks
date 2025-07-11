@@ -8,7 +8,7 @@ namespace ProjectTask.Infrastructure.Data
     {
         public DbSet<Users> Users { get; set; }
         public DbSet<Projects> Projects { get; set; }
-        public DbSet<ProjectTasks> Tasks { get; set; }
+        public DbSet<ProjectTasks> ProjectTasks { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options) { }
