@@ -4,6 +4,6 @@ namespace ProjectTask.Application.Interfaces
 {
     public interface ILoginService
     {
-        Task<(string Token, string? UserId, string Message)> UserLogin(UserLoginRequest request);
+        Task<(string Token, int? UserId, string Message)> UserLogin(UserLoginRequest request);
     }
 }

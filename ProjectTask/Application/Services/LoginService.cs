@@ -19,13 +19,13 @@ namespace ProjectTask.Application.Services
             _db = db;
             _config = config;
         }
-        public async Task<(string Token, string? UserId, string Message)> UserLogin(UserLoginRequest request)
+        public async Task<(string Token, int? UserId, string Message)> UserLogin(UserLoginRequest request)
         {
 
             var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (user == null)
             {
-                return ("", "", "Invalid Username");
+                return ("", 0, "Invalid Username");
             }
             using var hmac = new HMACSHA256(user.PasswordSalt);
 
@@ -34,11 +34,11 @@ namespace ProjectTask.Application.Services
 
             if (!computedHash.SequenceEqual(user.PasswordHash))
             {
-                return ("", "", "Invalid Username or Password");
+                return ("", 0, "Invalid Username or Password");
             }
             string jwtToken = Helper.GenerateToken(user, _config);
 
-            return (jwtToken, user.Username, "Success");
+            return (jwtToken, user.UserId, "Success");
 
         }
     }

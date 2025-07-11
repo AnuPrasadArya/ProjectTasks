@@ -32,17 +32,26 @@ namespace ProjectTaskUI.Controllers
                 var content = await response.Content.ReadAsStringAsync();
                 var json = JsonDocument.Parse(content);
                 var token = json.RootElement.GetProperty("token").GetString();
+                var userId = json.RootElement.GetProperty("userId").GetInt32();
+                //    var claims = new List<Claim>
+                //{
+                //    new Claim(ClaimTypes.Name, model.Username),
+                //    new Claim("AccessToken", token),
+                //    new Claim("userId", Convert.ToString(userId))
+                //};
 
+                //    var identity = new ClaimsIdentity(claims, "MyCookieAuth");
+                //    var principal = new ClaimsPrincipal(identity);
+
+
+                //    await HttpContext.SignInAsync("MyCookieAuth", principal);
                 var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, model.Username),
-                new Claim("AccessToken", token)
-            };
+{
+    new Claim(ClaimTypes.Name, model.Username),
+    new Claim("AccessToken", token),
+    new Claim("userId", userId.ToString())
+};
 
-                var identity = new ClaimsIdentity(claims, "MyCookieAuth");
-                var principal = new ClaimsPrincipal(identity);
-
-                await HttpContext.SignInAsync("MyCookieAuth", principal);
                 return RedirectToAction("Projects", "Home");
             }
 

@@ -4,20 +4,45 @@
     return "";
 }
 
-function getAccessToken() {
-    let value = document.cookie.split('; ').find(row => row.startsWith('.AspNet.MyCookieAuth='));
-    if (!value) return null;
+//function getAccessToken() {
+//    let value = document.cookie.split('; ').find(row => row.startsWith('.AspNet.MyCookieAuth='));
+//    if (!value) return null;
 
-    let accessToken = "";
-    try {
-        let claims = atob(value.split('=')[1].split('.')[1]);
-        accessToken = JSON.parse(claims)["AccessToken"];
-    } catch {
-        return null;
-    }
-    return accessToken;
+//    let accessToken = "";
+//    try {
+//        let claims = atob(value.split('=')[1].split('.')[1]);
+//        accessToken = JSON.parse(claims)["AccessToken"];
+//    } catch {
+//        return null;
+//    }
+//    console.log("accesees", accessToken);
+//    return accessToken;
+//}
+//function getUserId() {
+//    let value = document.cookie.split('; ').find(row => row.startsWith('.AspNet.MyCookieAuth='));
+//    console.log("evideee", value);
+//    let UserId = "";
+//    try {
+//        let claims = atob(value.split('=')[1].split('.')[1]);
+//        UserId = JSON.parse(claims)["userId"];
+//        console.log("evideee111", claims);
+//       // console.log("evideee222222", UserId);
+//    } catch (e){
+
+//        console.log("err", e);
+//        return null;
+//    }
+//    return UserId;
+//}
+function getAccessToken() {
+    return localStorage.getItem("accessToken");
 }
 
+
+
+function getUserId() {
+    return localStorage.getItem("userId");
+}
 function showProjectForm() {
     document.getElementById("projectForm").style.display = "block";
 }
@@ -27,25 +52,33 @@ function showTaskForm() {
 }
 
 async function loadProjects() {
-    let token = getAccessToken();
-    const res = await fetch('/Account/Login');
-    if (!token) return;
+    
+    //let token = getAccessToken();
+    
+    //let UserId = getUserId();
+    //console.log("tok", token);
+    //console.log("usr", UserId);
+    //const res = await fetch('/Account/Login');
+    //if (!token) return;
+    //let data = {
+    //    userId: document.getElementById("projectName").value,        
+    //};
+    //const response = await fetch('https://localhost:7125/api/Project/GetProject', {
+    //    headers: {
+    //        'Authorization': `Bearer ${token}`
+    //    },
+    //    body: JSON.stringify(data)
+    //});
 
-    const response = await fetch('https://localhost:5001/api/Projects', {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
-
-    const projects = await response.json();
-    let list = document.getElementById("projectsList");
-    list.innerHTML = "";
-    projects.forEach(p => {
-        list.innerHTML += `<li class="list-group-item">
-            ${p.name}
-            <a href="/Home/Tasks?projectId=${p.id}" class="btn btn-sm btn-primary ms-2">Tasks</a>
-        </li>`;
-    });
+    //const projects = await response.json();
+    //let list = document.getElementById("projectsList");
+    //list.innerHTML = "";
+    //projects.forEach(p => {
+    //    list.innerHTML += `<li class="list-group-item">
+    //        ${p.name}
+    //        <a href="/Home/Tasks?projectId=${p.id}" class="btn btn-sm btn-primary ms-2">Tasks</a>
+    //    </li>`;
+    //});
 }
 
 async function createProject() {
