@@ -44,5 +44,11 @@ namespace ProjectTask.API.Controllers
             await _taskService.DeleteTask(request);
             return NoContent();
         }
+        [HttpGet("GetEmployeeWcf")]
+        public async Task<IActionResult> GetEmployeeInfo()
+        {
+            await _taskService.GetEmployeeInfo();
+            return NoContent();
+        }
     }
 }

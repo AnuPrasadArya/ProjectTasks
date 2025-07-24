@@ -1,3 +1,4 @@
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +38,12 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddHangfire(config =>
+{
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireDb"));
+});
 
+builder.Services.AddHangfireServer();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost7050",
@@ -63,6 +69,7 @@ builder.Services.AddScoped<IRegisterService, RegisterService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddTransient<EmployeeJobService>();
 
 var app = builder.Build();
 
@@ -76,7 +83,16 @@ app.UseCors("AllowLocalhost7050");
 app.UseHttpsRedirection();
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseAuthorization();
-
+app.UseHangfireDashboard();
+app.MapHangfireDashboard();
 app.MapControllers();
 
+RecurringJob.AddOrUpdate<EmployeeJobService>(
+    "fetch-employee-data",
+    job => job.FetchAndProcessEmployeeData(),
+    "*/45 * * * *"
+
+);
+
 app.Run();
+

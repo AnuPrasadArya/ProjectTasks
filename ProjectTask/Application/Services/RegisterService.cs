@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Hangfire.Storage;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using ProjectTask.Application.DTOs;
 using ProjectTask.Application.Interfaces;
 using ProjectTask.Domain.Entities;
 using ProjectTask.Helpers;
 using ProjectTask.Infrastructure.Data;
+using System.Data;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -39,6 +42,35 @@ namespace ProjectTask.Application.Services
             await _db.SaveChangesAsync();
 
             return (JwtToken ,request.Username, "Success");
+        }
+        public async Task<string> NewUserRegistrationJson(string request)
+        {
+            //var jsonParam = new SqlParameter("@JsonData", request);
+
+            //await _db.Database.ExecuteSqlRawAsync("EXEC dbo.InsertEmployeesFromJson @JsonData", jsonParam);
+            try
+            {
+                var constring = _config.GetConnectionString("DefaultConnection");
+                using (SqlConnection con = new SqlConnection(constring))
+                {
+                    SqlCommand cmd = new SqlCommand("InsertEmployeesFromJson", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@JsonData", request);
+
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                }
+
+                return "Success";
+            }
+            catch (Exception)
+            {
+
+                return "Failed";
+            }
+            
         }
     }
 }

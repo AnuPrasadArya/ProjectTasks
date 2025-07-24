@@ -9,5 +9,6 @@ namespace ProjectTask.Application.Interfaces
         Task<ProjectTasks> CreateTask(TaskRequest request);
         Task<ProjectTasks> UpdateTask(TaskRequest request);
         Task DeleteTask(TaskRequest request);
+        Task GetEmployeeInfo();
     }
 }
