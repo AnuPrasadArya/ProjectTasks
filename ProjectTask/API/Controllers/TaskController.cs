@@ -4,6 +4,7 @@ using ProjectTask.Application.DTOs;
 using ProjectTask.Application.Interfaces;
 using ProjectTask.Domain.Entities;
 using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ProjectTask.API.Controllers
 {
@@ -47,8 +48,8 @@ namespace ProjectTask.API.Controllers
         [HttpGet("GetEmployeeWcf")]
         public async Task<IActionResult> GetEmployeeInfo()
         {
-            await _taskService.GetEmployeeInfo();
-            return NoContent();
+           var result = await _taskService.GetEmployeeInfo();
+            return Ok(result);
         }
     }
 }
